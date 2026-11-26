@@ -1,0 +1,767 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#174d38">
+  <title>Verde Vivo | Mi jardín</title>
+
+  <style>
+    :root {
+      --verde: #174d38;
+      --verde-2: #347650;
+      --fondo: #f3f7f0;
+      --claro: #e7f1e7;
+      --texto: #24352b;
+      --suave: #637168;
+      --borde: #dce5dc;
+      --blanco: #fff;
+      --rojo: #a63e3e;
+      --amarillo: #fff2cc;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--fondo);
+      color: var(--texto);
+      font: 16px/1.5 Arial, Helvetica, sans-serif;
+    }
+
+    header {
+      padding: 24px 16px;
+      color: white;
+      background: linear-gradient(120deg, var(--verde), var(--verde-2));
+    }
+
+    .contenedor { width: min(1120px, 94%); margin: auto; }
+
+    .encabezado {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    h1 { margin: 0; font-size: 1.8rem; }
+    header p { margin: 5px 0 0; color: #e5f0e5; }
+    main { padding: 22px 0 40px; }
+    h2 { margin: 0 0 14px; color: var(--verde); font-size: 1.3rem; }
+
+    .resumen {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .dato, .panel, .tarjeta {
+      background: var(--blanco);
+      border: 1px solid var(--borde);
+      border-radius: 12px;
+    }
+
+    .dato { padding: 15px; }
+    .dato strong { display: block; color: var(--verde); font-size: 1.4rem; }
+    .panel { padding: 18px; margin-bottom: 18px; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .campo { display: flex; flex-direction: column; gap: 5px; }
+    .completo { grid-column: 1 / -1; }
+    label { font-weight: bold; }
+
+    input, select, textarea, button { font: inherit; }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      color: var(--texto);
+      background: white;
+      border: 1px solid #bdcbbf;
+      border-radius: 7px;
+    }
+
+    textarea { min-height: 76px; resize: vertical; }
+
+    button {
+      padding: 10px 13px;
+      color: white;
+      background: var(--verde);
+      border: 0;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover { filter: brightness(1.12); }
+    button.secundario { color: var(--verde); background: var(--claro); }
+    button.rojo { background: var(--rojo); }
+
+    .botones, .acciones { display: flex; gap: 8px; flex-wrap: wrap; }
+    .acciones { margin-top: 12px; }
+    .acciones button { flex: 1; min-width: 115px; }
+
+    .nota, .muted { color: var(--suave); font-size: .92rem; }
+    #aviso { min-height: 22px; color: var(--verde); font-weight: bold; }
+
+    .herramientas {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .lista {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .tarjeta { overflow: hidden; }
+    .tarjeta img {
+      display: block;
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+      background: var(--claro);
+    }
+
+    .contenido { padding: 15px; }
+    .contenido h3 { margin: 0; color: var(--verde); }
+    .etiqueta {
+      display: inline-block;
+      margin: 6px 5px 4px 0;
+      padding: 4px 9px;
+      color: var(--verde);
+      background: var(--claro);
+      border-radius: 20px;
+      font-size: .84rem;
+    }
+
+    .historial { padding-left: 20px; color: var(--suave); }
+    .vacio {
+      grid-column: 1 / -1;
+      padding: 22px;
+      color: var(--suave);
+      text-align: center;
+      background: white;
+      border: 1px dashed #bdcbbf;
+      border-radius: 12px;
+    }
+
+    .pendiente {
+      padding: 10px;
+      margin: 8px 0;
+      background: var(--amarillo);
+      border-radius: 8px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      display: none;
+      overflow-y: auto;
+      padding: 20px;
+      background: #0008;
+    }
+
+    .modal.abierto { display: block; }
+    .modal-contenido {
+      width: min(650px, 100%);
+      margin: 30px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+    }
+
+    footer { padding: 20px; color: var(--suave); text-align: center; }
+
+    @media (max-width: 700px) {
+      .resumen { grid-template-columns: repeat(2, 1fr); }
+      .lista, .form-grid, .herramientas { grid-template-columns: 1fr; }
+      .completo { grid-column: auto; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="contenedor encabezado">
+      <div>
+        <h1>🌿 Verde Vivo</h1>
+        <p>Tu espacio para organizar y recordar los cuidados de tus plantas.</p>
+      </div>
+      <div class="botones">
+        <button id="exportar" class="secundario" type="button">Descargar copia</button>
+        <button id="botonImportar" class="secundario" type="button">Importar copia</button>
+        <input id="archivoImportar" type="file" accept=".json,application/json" hidden>
+      </div>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <section class="resumen">
+      <div class="dato"><strong id="totalPlantas">0</strong>Plantas</div>
+      <div class="dato"><strong id="totalRiegos">0</strong>Riegos registrados</div>
+      <div class="dato"><strong id="totalNotas">0</strong>Notas del diario</div>
+      <div class="dato"><strong id="proximos">0</strong>Riegos próximos o pendientes</div>
+    </section>
+
+    <section class="panel">
+      <h2 id="tituloFormulario">Agregar una planta</h2>
+
+      <form id="formulario">
+        <input id="idEdicion" type="hidden">
+
+        <div class="form-grid">
+          <div class="campo">
+            <label for="nombre">Nombre para reconocerla *</label>
+            <input id="nombre" maxlength="60" required placeholder="Ejemplo: mi planta de la sala">
+          </div>
+
+          <div class="campo">
+            <label for="especie">Especie, si la conoces</label>
+            <input id="especie" maxlength="80" placeholder="Nombre común o científico">
+          </div>
+
+          <div class="campo">
+            <label for="tipo">Categoría</label>
+            <select id="tipo">
+              <option value="interior">Planta de interior</option>
+              <option value="cactus">Cactus o suculenta</option>
+              <option value="tropical">Planta tropical</option>
+              <option value="aromatica">Planta aromática</option>
+              <option value="exterior">Planta de exterior</option>
+              <option value="otra">Otra</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="ubicacion">Ubicación</label>
+            <input id="ubicacion" maxlength="60" placeholder="Ejemplo: junto a la ventana">
+          </div>
+
+          <div class="campo">
+            <label for="luz">Luz aproximada</label>
+            <select id="luz">
+              <option>Luz indirecta</option>
+              <option>Luz directa</option>
+              <option>Poca luz</option>
+              <option>No estoy seguro</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="diasRiego">Avisarme cada cuántos días (opcional)</label>
+            <input id="diasRiego" type="number" min="1" max="365" placeholder="Ejemplo: 7">
+          </div>
+
+          <div class="campo">
+            <label for="foto">Foto de referencia (opcional)</label>
+            <input id="foto" type="file" accept="image/*">
+          </div>
+
+          <div class="campo">
+            <label for="fecha">Fecha en que la agregaste</label>
+            <input id="fecha" type="date">
+          </div>
+
+          <div class="campo completo">
+            <label for="notas">Notas personales</label>
+            <textarea id="notas" maxlength="500" placeholder="Observaciones o cuidados confirmados para esta planta"></textarea>
+          </div>
+
+          <div class="completo botones">
+            <button id="guardarPlanta" type="submit">Guardar planta</button>
+            <button id="cancelarEdicion" class="secundario" type="button" hidden>Cancelar edición</button>
+          </div>
+        </div>
+      </form>
+
+      <p class="nota">La foto es solo una referencia: esta página no reconoce automáticamente las especies.</p>
+      <p id="aviso" aria-live="polite"></p>
+    </section>
+
+    <section class="panel">
+      <h2>Cuidados pendientes</h2>
+      <div id="pendientes"></div>
+      <p class="nota">Las fechas son recordatorios aproximados. Revisa la tierra y las necesidades de cada especie antes de regar.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Mi colección</h2>
+      <div class="herramientas">
+        <input id="buscar" type="search" placeholder="Buscar por nombre, especie o ubicación">
+        <select id="filtro">
+          <option value="todas">Todas las categorías</option>
+          <option value="interior">Planta de interior</option>
+          <option value="cactus">Cactus o suculenta</option>
+          <option value="tropical">Planta tropical</option>
+          <option value="aromatica">Planta aromática</option>
+          <option value="exterior">Planta de exterior</option>
+          <option value="otra">Otra</option>
+        </select>
+      </div>
+      <div id="lista" class="lista"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Consejos para observar tus plantas</h2>
+      <ul>
+        <li>Antes de regar, revisa la tierra. No te guíes únicamente por un calendario.</li>
+        <li>La luz y el agua que necesita una planta dependen de su especie, el clima y el lugar.</li>
+        <li>Anota cambios en hojas, tierra o ubicación para comparar cómo evoluciona con el tiempo.</li>
+        <li>Si no conoces una especie, busca una guía confiable antes de cambiar sus cuidados.</li>
+      </ul>
+      <p class="nota">Los consejos de esta página son generales y no reemplazan información específica de cada especie.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Cómo se guardan tus datos</h2>
+      <p>La información se guarda en el navegador del dispositivo. No se sincroniza automáticamente con otros dispositivos. Descarga una copia para respaldarla o importarla en otro navegador.</p>
+      <p class="nota">Las fotos ocupan espacio. Si una foto no se guarda, prueba con una imagen más pequeña. No pongas información privada en esta página pública.</p>
+    </section>
+  </main>
+
+  <div id="modalDiario" class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloDiario">
+    <div class="modal-contenido">
+      <h2 id="tituloDiario">Diario de la planta</h2>
+      <p id="nombreDiario"></p>
+
+      <form id="formDiario">
+        <input id="idDiario" type="hidden">
+
+        <div class="campo">
+          <label for="tipoRegistro">Tipo de registro</label>
+          <select id="tipoRegistro">
+            <option>Observación</option>
+            <option>Riego</option>
+            <option>Abono</option>
+            <option>Poda</option>
+            <option>Trasplante</option>
+            <option>Limpieza de hojas</option>
+            <option>Otro cuidado</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="textoDiario">Nota</label>
+          <textarea id="textoDiario" maxlength="400" placeholder="¿Qué hiciste o qué observaste?"></textarea>
+        </div>
+
+        <div class="botones" style="margin-top:12px">
+          <button type="submit">Guardar en el diario</button>
+          <button id="cerrarDiario" class="secundario" type="button">Cerrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer>Verde Vivo · Registro personal de plantas</footer>
+
+  <script>
+    const CLAVE = "verdeVivoCompletoV1";
+    const formulario = document.querySelector("#formulario");
+    const lista = document.querySelector("#lista");
+    const aviso = document.querySelector("#aviso");
+    let plantas = [];
+
+    try {
+      plantas = JSON.parse(localStorage.getItem(CLAVE)) || [];
+      if (!Array.isArray(plantas)) plantas = [];
+    } catch {
+      plantas = [];
+    }
+
+    function guardarDatos() {
+      try {
+        localStorage.setItem(CLAVE, JSON.stringify(plantas));
+        mostrar();
+        aviso.textContent = "Cambios guardados en este navegador.";
+      } catch {
+        aviso.textContent = "No se pudo guardar. Prueba con una foto más pequeña.";
+      }
+    }
+
+    function tipoNombre(tipo) {
+      const nombres = {
+        interior: "Planta de interior",
+        cactus: "Cactus o suculenta",
+        tropical: "Planta tropical",
+        aromatica: "Planta aromática",
+        exterior: "Planta de exterior",
+        otra: "Otra"
+      };
+      return nombres[tipo] || "Otra";
+    }
+
+    function consejo(tipo) {
+      const consejos = {
+        interior: "Observa la luz del lugar y revisa la tierra antes de regar.",
+        cactus: "Comprueba la tierra antes de regar; evita mantenerla siempre mojada.",
+        tropical: "Confirma los cuidados de su especie y evita dejar la tierra empapada.",
+        aromatica: "Muchas aromáticas necesitan buena luz; revisa la guía de su especie.",
+        exterior: "Ten en cuenta la lluvia, el sol directo y la temperatura.",
+        otra: "Busca información fiable para la especie exacta."
+      };
+      return consejos[tipo] || consejos.otra;
+    }
+
+    function crearElemento(tag, texto) {
+      const elemento = document.createElement(tag);
+      elemento.textContent = texto;
+      return elemento;
+    }
+
+    function fechaLegible(fecha) {
+      return new Date(fecha).toLocaleString("es-PE");
+    }
+
+    function calcularProximo(planta) {
+      if (!planta.diasRiego || !planta.historial) return null;
+      const ultimo = planta.historial.find(item => item.tipo === "Riego");
+      if (!ultimo) return null;
+
+      const fecha = new Date(ultimo.fecha);
+      fecha.setDate(fecha.getDate() + Number(planta.diasRiego));
+      return fecha;
+    }
+
+    function mostrarPendientes() {
+      const contenedor = document.querySelector("#pendientes");
+      contenedor.replaceChildren();
+
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0);
+
+      const conFecha = plantas
+        .map(planta => ({ planta, fecha: calcularProximo(planta) }))
+        .filter(item => item.fecha)
+        .sort((a, b) => a.fecha - b.fecha);
+
+      const pendientesAhora = conFecha.filter(item => {
+        const fecha = new Date(item.fecha);
+        fecha.setHours(0, 0, 0, 0);
+        return fecha <= hoy;
+      });
+
+      document.querySelector("#proximos").textContent = pendientesAhora.length;
+
+      if (!conFecha.length) {
+        contenedor.appendChild(crearElemento(
+          "p",
+          "Agrega una frecuencia de recordatorio y registra un primer riego para ver fechas estimadas."
+        ));
+        return;
+      }
+
+      conFecha.forEach(({ planta, fecha }) => {
+        const caja = document.createElement("div");
+        caja.className = "pendiente";
+        const fechaTexto = fecha.toLocaleDateString("es-PE");
+        const estado = fecha <= hoy ? "Fecha estimada alcanzada" : "Próximo recordatorio";
+        caja.textContent = planta.nombre + " · " + estado + ": " + fechaTexto +
+          ". Revisa primero si necesita agua.";
+        contenedor.appendChild(caja);
+      });
+    }
+
+    function mostrar() {
+      lista.replaceChildren();
+
+      const termino = document.querySelector("#buscar").value.trim().toLowerCase();
+      const filtro = document.querySelector("#filtro").value;
+
+      const visibles = plantas.filter(planta => {
+        const texto = [
+          planta.nombre, planta.especie, planta.ubicacion
+        ].join(" ").toLowerCase();
+
+        return texto.includes(termino) &&
+          (filtro === "todas" || planta.tipo === filtro);
+      });
+
+      const historialCompleto = plantas.flatMap(planta => planta.historial || []);
+      const totalRiegos = historialCompleto.filter(item => item.tipo === "Riego").length;
+      const totalNotas = historialCompleto.length;
+
+      document.querySelector("#totalPlantas").textContent = plantas.length;
+      document.querySelector("#totalRiegos").textContent = totalRiegos;
+      document.querySelector("#totalNotas").textContent = totalNotas;
+
+      mostrarPendientes();
+
+      if (!visibles.length) {
+        const mensaje = crearElemento("p", plantas.length
+          ? "No hay plantas que coincidan con la búsqueda."
+          : "Todavía no agregaste plantas. Usa el formulario para comenzar.");
+        mensaje.className = "vacio";
+        lista.appendChild(mensaje);
+        return;
+      }
+
+      visibles.forEach(planta => {
+        const tarjeta = document.createElement("article");
+        tarjeta.className = "tarjeta";
+
+        if (planta.foto) {
+          const imagen = document.createElement("img");
+          imagen.src = planta.foto;
+          imagen.alt = "Foto de " + planta.nombre;
+          tarjeta.appendChild(imagen);
+        }
+
+        const contenido = document.createElement("div");
+        contenido.className = "contenido";
+        contenido.appendChild(crearElemento("h3", planta.nombre));
+
+        if (planta.especie) contenido.appendChild(crearElemento("p", "Especie: " + planta.especie));
+        if (planta.ubicacion) contenido.appendChild(crearElemento("p", "Ubicación: " + planta.ubicacion));
+
+        const etiquetaTipo = crearElemento("span", tipoNombre(planta.tipo));
+        etiquetaTipo.className = "etiqueta";
+        contenido.appendChild(etiquetaTipo);
+
+        const etiquetaLuz = crearElemento("span", planta.luz || "Luz no indicada");
+        etiquetaLuz.className = "etiqueta";
+        contenido.appendChild(etiquetaLuz);
+
+        contenido.appendChild(crearElemento("p", "Consejo general: " + consejo(planta.tipo)));
+
+        if (planta.diasRiego) {
+          contenido.appendChild(crearElemento("p", "Recordatorio configurado: cada " + planta.diasRiego + " días, como estimación."));
+        }
+
+        if (planta.notas) contenido.appendChild(crearElemento("p", "Notas: " + planta.notas));
+
+        const historial = planta.historial || [];
+        const ultimoRiego = historial.find(item => item.tipo === "Riego");
+        contenido.appendChild(crearElemento(
+          "p",
+          ultimoRiego ? "Último riego: " + fechaLegible(ultimoRiego.fecha) : "Aún no registraste riegos."
+        ));
+
+        if (historial.length) {
+          contenido.appendChild(crearElemento("strong", "Diario reciente:"));
+          const ul = document.createElement("ul");
+          ul.className = "historial";
+
+          historial.slice(0, 4).forEach(item => {
+            const detalle = item.nota ? " · " + item.nota : "";
+            ul.appendChild(crearElemento("li", item.tipo + " · " + fechaLegible(item.fecha) + detalle));
+          });
+
+          contenido.appendChild(ul);
+        }
+
+        const acciones = document.createElement("div");
+        acciones.className = "acciones";
+
+        const botonEditar = crearElemento("button", "Editar");
+        botonEditar.type = "button";
+        botonEditar.className = "secundario";
+        botonEditar.addEventListener("click", () => editarPlanta(planta.id));
+
+        const botonDiario = crearElemento("button", "Añadir al diario");
+        botonDiario.type = "button";
+        botonDiario.addEventListener("click", () => abrirDiario(planta));
+
+        const botonRiego = crearElemento("button", "Registrar riego");
+        botonRiego.type = "button";
+        botonRiego.addEventListener("click", () => registrar(planta.id, "Riego", ""));
+
+        const botonEliminar = crearElemento("button", "Eliminar");
+        botonEliminar.type = "button";
+        botonEliminar.className = "rojo";
+        botonEliminar.addEventListener("click", () => {
+          if (confirm("¿Eliminar " + planta.nombre + " y su historial?")) {
+            plantas = plantas.filter(item => item.id !== planta.id);
+            guardarDatos();
+          }
+        });
+
+        acciones.append(botonEditar, botonDiario, botonRiego, botonEliminar);
+        contenido.appendChild(acciones);
+        tarjeta.appendChild(contenido);
+        lista.appendChild(tarjeta);
+      });
+    }
+
+    function registrar(id, tipo, nota) {
+      const planta = plantas.find(item => item.id === id);
+      if (!planta) return;
+
+      planta.historial = planta.historial || [];
+      planta.historial.unshift({
+        tipo,
+        fecha: new Date().toISOString(),
+        nota: nota || ""
+      });
+
+      guardarDatos();
+    }
+
+    function editarPlanta(id) {
+      const planta = plantas.find(item => item.id === id);
+      if (!planta) return;
+
+      document.querySelector("#idEdicion").value = planta.id;
+      document.querySelector("#nombre").value = planta.nombre || "";
+      document.querySelector("#especie").value = planta.especie || "";
+      document.querySelector("#tipo").value = planta.tipo || "otra";
+      document.querySelector("#ubicacion").value = planta.ubicacion || "";
+      document.querySelector("#luz").value = planta.luz || "No estoy seguro";
+      document.querySelector("#diasRiego").value = planta.diasRiego || "";
+      document.querySelector("#fecha").value = planta.fechaAgregada || "";
+      document.querySelector("#notas").value = planta.notas || "";
+
+      document.querySelector("#tituloFormulario").textContent = "Editar planta";
+      document.querySelector("#guardarPlanta").textContent = "Guardar cambios";
+      document.querySelector("#cancelarEdicion").hidden = false;
+      document.querySelector("#nombre").focus();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function cancelarEdicion() {
+      formulario.reset();
+      document.querySelector("#idEdicion").value = "";
+      document.querySelector("#tituloFormulario").textContent = "Agregar una planta";
+      document.querySelector("#guardarPlanta").textContent = "Guardar planta";
+      document.querySelector("#cancelarEdicion").hidden = true;
+    }
+
+    function abrirDiario(planta) {
+      document.querySelector("#idDiario").value = planta.id;
+      document.querySelector("#nombreDiario").textContent = "Planta: " + planta.nombre;
+      document.querySelector("#textoDiario").value = "";
+      document.querySelector("#tipoRegistro").value = "Observación";
+      document.querySelector("#modalDiario").classList.add("abierto");
+      document.querySelector("#textoDiario").focus();
+    }
+
+    function cerrarDiario() {
+      document.querySelector("#modalDiario").classList.remove("abierto");
+    }
+
+    formulario.addEventListener("submit", evento => {
+      evento.preventDefault();
+
+      const id = document.querySelector("#idEdicion").value;
+      const archivoFoto = document.querySelector("#foto").files[0];
+
+      function terminar(fotoNueva) {
+        const datos = {
+          nombre: document.querySelector("#nombre").value.trim(),
+          especie: document.querySelector("#especie").value.trim(),
+          tipo: document.querySelector("#tipo").value,
+          ubicacion: document.querySelector("#ubicacion").value.trim(),
+          luz: document.querySelector("#luz").value,
+          diasRiego: document.querySelector("#diasRiego").value,
+          fechaAgregada: document.querySelector("#fecha").value,
+          notas: document.querySelector("#notas").value.trim()
+        };
+
+        if (id) {
+          const planta = plantas.find(item => item.id === id);
+          if (!planta) return;
+          Object.assign(planta, datos);
+          if (fotoNueva !== null) planta.foto = fotoNueva;
+          aviso.textContent = "Planta actualizada.";
+        } else {
+          plantas.unshift({
+            id: String(Date.now()) + Math.random().toString(16).slice(2),
+            ...datos,
+            foto: fotoNueva || "",
+            historial: []
+          });
+          aviso.textContent = "Planta guardada.";
+        }
+
+        cancelarEdicion();
+        guardarDatos();
+      }
+
+      if (!archivoFoto) {
+        terminar(null);
+        return;
+      }
+
+      if (archivoFoto.size > 1_000_000) {
+        aviso.textContent = "La foto pesa más de 1 MB. Elige una imagen más pequeña.";
+        return;
+      }
+
+      const lector = new FileReader();
+      lector.onload = () => terminar(lector.result);
+      lector.onerror = () => {
+        aviso.textContent = "No se pudo cargar la foto. Intenta con otra.";
+      };
+      lector.readAsDataURL(archivoFoto);
+    });
+
+    document.querySelector("#cancelarEdicion").addEventListener("click", cancelarEdicion);
+
+    document.querySelector("#formDiario").addEventListener("submit", evento => {
+      evento.preventDefault();
+      const id = document.querySelector("#idDiario").value;
+      const tipo = document.querySelector("#tipoRegistro").value;
+      const nota = document.querySelector("#textoDiario").value.trim();
+      registrar(id, tipo, nota);
+      cerrarDiario();
+    });
+
+    document.querySelector("#cerrarDiario").addEventListener("click", cerrarDiario);
+
+    document.querySelector("#modalDiario").addEventListener("click", evento => {
+      if (evento.target.id === "modalDiario") cerrarDiario();
+    });
+
+    document.querySelector("#buscar").addEventListener("input", mostrar);
+    document.querySelector("#filtro").addEventListener("change", mostrar);
+
+    document.querySelector("#exportar").addEventListener("click", () => {
+      const archivo = new Blob([JSON.stringify(plantas, null, 2)], {
+        type: "application/json"
+      });
+
+      const enlace = document.createElement("a");
+      enlace.href = URL.createObjectURL(archivo);
+      enlace.download = "copia-verde-vivo.json";
+      enlace.click();
+      URL.revokeObjectURL(enlace.href);
+    });
+
+    document.querySelector("#botonImportar").addEventListener("click", () => {
+      document.querySelector("#archivoImportar").click();
+    });
+
+    document.querySelector("#archivoImportar").addEventListener("change", evento => {
+      const archivo = evento.target.files[0];
+      if (!archivo) return;
+
+      const lector = new FileReader();
+      lector.onload = () => {
+        try {
+          const datos = JSON.parse(lector.result);
+          if (!Array.isArray(datos)) throw new Error("Archivo no válido");
+
+          if (confirm("La importación reemplazará la colección actual. ¿Continuar?")) {
+            plantas = datos;
+            guardarDatos();
+            aviso.textContent = "Copia importada.";
+          }
+        } catch {
+          aviso.textContent = "El archivo no parece una copia válida.";
+        }
+        evento.target.value = "";
+      };
+      lector.readAsText(archivo);
+    });
+
+    mostrar();
+  </script>
+</body>
+</html>
